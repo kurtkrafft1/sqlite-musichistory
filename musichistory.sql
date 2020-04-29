@@ -1,59 +1,45 @@
-SELECT * FROM Genre;
+CREATE TABLE Cohort (
+    cohort_id	   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Name   TEXT NOT NULL UNIQUE
+);
 
-INSERT INTO Artist (ArtistName, YearEstablished) 
-VALUES ('The Strokes', 2001);
+CREATE TABLE Student (
+	Id		INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	first_name TEXT NOT NULL,
+	last_name TEXT NOT NULL,
+	slack_handle TEXT NOT NULL UNIQUE,
+	cohort_id INTEGER,
+	FOREIGN KEY (cohort_id)
+		REFERENCES Cohort (cohort_id));
 
-INSERT INTO Album (Title, ArtistId, ReleaseDate, GenreId, "Label", AlbumLength)
-VALUES ('Room On Fire', 28, "04/01/2001", 2, "Columbia", 2459);
+CREATE TABLE Instructor (
+	instructor_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	first_name TEXT NOT NULL,
+	last_name TEXT NOT NULL,
+	slack_handle TEXT NOT NULL UNIQUE,
+	specialties TEXT NOT NULL,
+	cohort_id INTEGER,
+	FOREIGN KEY (cohort_id)
+		REFERENCES Cohort (cohort_id)
+);
 
-INSERT INTO Album (Title, ArtistId, ReleaseDate, GenreId, "Label", AlbumLength)
-VALUES ('The New Abnormal', 28, "04/01/2020", 2, "Columbia", 3000);
+CREATE TABLE Exercise (
+	exercise_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	name TEXT NOT NULL UNIQUE,
+	language TEXT NOT NULL
+);
 
-SELECT * FROM Album WHERE ArtistId = 28;
-
--- Didn't knpw release date was a string 
-
-DELETE FROM Album
-WHERE AlbumId = 23;
-
-DELETE FROM Album
-WHERE AlbumId = 24;
-
--- continue
-
-INSERT INTO Song (Title, ReleaseDate, SongLength, ArtistId, AlbumId, GenreId)
-VALUES ("Automatic Stop", "04/01/2001", 240, 28, 25, 2);
-
-INSERT INTO Song (Title, ReleaseDate, SongLength, ArtistId, AlbumId, GenreId)
-VALUES ("SOMA", "04/01/2001", 240, 28, 25, 2);
-
-INSERT INTO Song (Title, ReleaseDate, SongLength, ArtistId, AlbumId, GenreId)
-VALUES ("Selfless", "04/01/2020", 300, 28, 26, 2);
-
-SELECT * FROM Song;
-
-SELECT a.Title, s.Title FROM Album a LEFT JOIN Song s ON s.AlbumId = a.AlbumId;
-SELECT a.Title, s.Title FROM Song s LEFT JOIN Album a ON s.AlbumId = a.AlbumId;
-
-SELECT ar.ArtistName, al.Title FROM Album al LEFT JOIN Artist ar ON ar.ArtistId = al.ArtistId WHERE ar.ArtistId = 28;
-SELECT a.Title, s.Title FROM Song s LEFT JOIN Album a ON s.AlbumId = a.AlbumId WHERE a.ArtistId = 28;
+CREATE TABLE Student_Exercises(
+	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	Student_Id INTEGER,
+	Exercise_Id INTEGER,
+	FOREIGN KEY (Student_Id)
+		REFERENCES Student(Id),
+	FOREIGN KEY (Exercise_Id)
+		REFERENCES Exercise(Exercise_Id)
+);
 
 
-SELECT COUNT(*)
-FROM Song
-WHERE AlbumId = 25;
 
-SELECT COUNT(*)
-FROM Song
-WHERE ArtistId = 28
-GROUP BY ArtistId;
 
-SELECT COUNT(*)
-FROM Song
-WHERE GenreId = 2;
-
-SELECT Title, AlbumLength, MAX(AlbumLength)
-FROM Album;
-
-SELECT s.Title, a.Title, s.SongLength, MAX(s.SongLength) FROM Song s LEFT JOIN Album a ON a.AlbumId = s.AlbumId;
 
